@@ -7,13 +7,10 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(BAD_REQUEST).send({
-          message: 'Переданы некорректные данные для создания пользователя',
-        });
+        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
+        return;
       }
-      return res.status(INTERNAL_SERVER_ERROR).send({
-        message: 'Произошла ошибка создания пользователя.',
-      });
+      res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка сервера' });
     });
 };
 
@@ -21,7 +18,7 @@ module.exports.getAllUsers = (req, res) => {
   User.find({})
     .then((user) => res.send({ users: user }))
     .catch(() => res.status(INTERNAL_SERVER_ERROR).send({
-      message: 'Произошла ошибка при получении списка пользователей.',
+      message: 'Ошибка при получении списка пользователей.',
     }));
 };
 
@@ -43,7 +40,7 @@ module.exports.getUserById = (req, res) => {
           .send({ message: 'Передан неверный id пользователя' });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({
-        message: 'Произошла ошибка при получении данных пользователя.',
+        message: 'Ошибка при получении данных пользователя.',
       });
     });
 };
@@ -68,7 +65,7 @@ module.exports.updateUserProfile = (req, res) => {
             .send({ message: `Пользователь с id: ${req.user._id} не найден.` });
         }
         return res.status(INTERNAL_SERVER_ERROR).send({
-          message: 'Произошла ошибка при обновлении данных пользователя.',
+          message: 'Ошибка при обновлении данных пользователя.',
         });
       });
   }
