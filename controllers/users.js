@@ -3,12 +3,10 @@ const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('../utils/erro
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
-  console.log(req.body);
   User.create({ name, about, avatar })
     .then((user) => res.status(201).send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        console.log(err.name);
         res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
         return;
       }
@@ -66,6 +64,11 @@ module.exports.updateUserProfile = (req, res) => {
             .status(NOT_FOUND)
             .send({ message: `Пользователь с id: ${req.user._id} не найден.` });
         }
+        if (err.name === 'CastError') {
+          return res
+            .status(BAD_REQUEST)
+            .send({ message: 'Передан неверный id пользователя' });
+        }
         return res.status(INTERNAL_SERVER_ERROR).send({
           message: 'Ошибка при обновлении данных пользователя.',
         });
@@ -92,6 +95,11 @@ module.exports.updateUserAvatar = (req, res) => {
             message: `Пользователь с id: ${req.user._id} не найден.`,
           });
         }
+        if (err.name === 'CastError') {
+          return res
+            .status(BAD_REQUEST)
+            .send({ message: 'Передан неверный id пользователя' });
+        }
         return res.status(INTERNAL_SERVER_ERROR).send({
           message: 'Произошла ошибка при обновлении аватара пользователя.',
         });
@@ -99,23 +107,3 @@ module.exports.updateUserAvatar = (req, res) => {
   }
 };
 
-module.exports.deleteUser = (req, res) => {
-  User.findByIdAndRemove(req.params.userId)
-    .orFail()
-    .then(() => res.send({ message: `Пользователь c id: ${req.params.userId} удалён.` }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res
-          .status(NOT_FOUND)
-          .send({ message: 'Запрашиваемый пользователь не найден.' });
-      }
-      if (err.name === 'DocumentNotFoundError') {
-        return res.status(NOT_FOUND).send({
-          message: `Пользователь с id: ${req.user._id} не найден.`,
-        });
-      }
-      return res.status(INTERNAL_SERVER_ERROR).send({
-        message: 'Ошибка при удалении пользователя',
-      });
-    });
-};
