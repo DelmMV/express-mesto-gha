@@ -5,11 +5,7 @@ const cardRouter = require('./routes/cards');
 const userRouter = require('./routes/users');
 
 const app = express();
-mongoose.connect('mongodb://localhost:27017/mestodb', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  family: 4,
-});
+mongoose.connect('mongodb://localhost:27017/mestodb');
 
 const { PORT = 3000 } = process.env;
 
@@ -19,7 +15,7 @@ app.use(express.json());
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '62f16a68a924af19f67a3e54',
+    _id: '62f2141dbf0828a4de657728',
   };
   next();
 });
