@@ -47,33 +47,40 @@ module.exports.getUserById = (req, res) => {
 
 module.exports.updateUserProfile = (req, res) => {
   const { name, about } = req.body;
-  if (name || about) {
-    User.findByIdAndUpdate(req.user._id, { name, about }, {
-      new: true, runValidators: true,
-    })
-      .orFail()
-      .then((user) => res.send(user))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          return res.status(BAD_REQUEST).send({
-            message: 'Переданы некорректные данные для обновления информации о пользователе',
-          });
-        }
-        if (err.name === 'DocumentNotFoundError') {
-          return res
-            .status(NOT_FOUND)
-            .send({ message: `Пользователь с id: ${req.user._id} не найден.` });
-        }
-        if (err.name === 'CastError') {
-          return res
-            .status(BAD_REQUEST)
-            .send({ message: 'Передан неверный id пользователя' });
-        }
-        return res.status(INTERNAL_SERVER_ERROR).send({
-          message: 'Ошибка при обновлении данных пользователя.',
-        });
+  if (!name || !about) {
+    return res.status(BAD_REQUEST)
+      .send({
+        message: 'Переданы некорректные данные для обновления информации о пользователе',
       });
   }
+  return User.findByIdAndUpdate(req.user._id, { name, about }, {
+    new: true,
+    runValidators: true,
+  })
+    .orFail()
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(BAD_REQUEST)
+          .send({
+            message: 'Переданы некорректные данные для обновления информации о пользователе',
+          });
+      }
+      if (err.name === 'DocumentNotFoundError') {
+        return res
+          .status(NOT_FOUND)
+          .send({ message: `Пользователь с id: ${req.user._id} не найден.` });
+      }
+      if (err.name === 'CastError') {
+        return res
+          .status(BAD_REQUEST)
+          .send({ message: 'Передан неверный id пользователя' });
+      }
+      return res.status(INTERNAL_SERVER_ERROR)
+        .send({
+          message: 'Ошибка при обновлении данных пользователя.',
+        });
+    });
 };
 
 module.exports.updateUserAvatar = (req, res) => {
