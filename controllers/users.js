@@ -85,31 +85,39 @@ module.exports.updateUserProfile = (req, res) => {
 
 module.exports.updateUserAvatar = (req, res) => {
   const { avatar } = req.body;
-  if (avatar) {
-    User.findByIdAndUpdate(req.user._id, { avatar }, {
-      new: true, runValidators: true,
-    })
-      .orFail()
-      .then((user) => res.send(user))
-      .catch((err) => {
-        if (err.name === 'ValidationError') {
-          return res.status(BAD_REQUEST).send({
-            message: 'Переданы некорректные данные для обновления аватара пользователя',
-          });
-        }
-        if (err.name === 'DocumentNotFoundError') {
-          return res.status(NOT_FOUND).send({
-            message: `Пользователь с id: ${req.user._id} не найден.`,
-          });
-        }
-        if (err.name === 'CastError') {
-          return res
-            .status(BAD_REQUEST)
-            .send({ message: 'Передан неверный id пользователя' });
-        }
-        return res.status(INTERNAL_SERVER_ERROR).send({
-          message: 'Произошла ошибка при обновлении аватара пользователя.',
-        });
+  if (!avatar) {
+    return res.status(BAD_REQUEST)
+      .send({
+        message: 'Переданы некорректные данные для обновления аватара пользователя',
       });
   }
+  User.findByIdAndUpdate(req.user._id, { avatar }, {
+    new: true,
+    runValidators: true,
+  })
+    .orFail()
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(BAD_REQUEST)
+          .send({
+            message: 'Переданы некорректные данные для обновления аватара пользователя',
+          });
+      }
+      if (err.name === 'DocumentNotFoundError') {
+        return res.status(NOT_FOUND)
+          .send({
+            message: `Пользователь с id: ${req.user._id} не найден.`,
+          });
+      }
+      if (err.name === 'CastError') {
+        return res
+          .status(BAD_REQUEST)
+          .send({ message: 'Передан неверный id пользователя' });
+      }
+      return res.status(INTERNAL_SERVER_ERROR)
+        .send({
+          message: 'Произошла ошибка при обновлении аватара пользователя.',
+        });
+    });
 };
