@@ -1,17 +1,42 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('../utils/errors');
+const { CREATE } = require('../utils/errors');
+const UnauthorizedError = require('../utils/unauthorized-error');
+const ConflictErro = require('../utils/conflict-error');
+const BadRequestError = require('../utils/bad-request-error');
 
-module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
-    .then((user) => res.status(201).send({ user }))
-    .catch((err) => {
+module.exports.createUser = (req, res, next) => {
+  const { name, about, avatar, email, password } = req.body;
+  User.findOne({ email }).then((userFinded) => {
+    if (userFinded) {
+      throw new ConflictError('Пользователь уже зарегестрирован');
+    }
+    bcrypt.hash(password, 10).then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
+      .then((user) => {
+        res.status(CREATE_STATUS).send({
+          data: {
+            email: user.email,
+            name: user.name,
+            about: user.about,
+            avatar: user.avatar,
+            _id: user._id,
+          },
+        });
+      }).catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({ message: 'Переданы некорректные данные' });
-        return;
+        throw new UnauthorizedError('Переданы некорректные данные');
       }
-      res.status(INTERNAL_SERVER_ERROR).send({ message: 'Ошибка сервера' });
-    });
+      if (err.code === 11000) {
+        throw new ConflictError('Пользователь уже зарегестрирован');
+      }
+      next(err);
+    })
+      .catch(next);
+  })
+    .catch(next);
 };
 
 module.exports.getAllUsers = (req, res) => {
@@ -81,6 +106,29 @@ module.exports.updateUserProfile = (req, res) => {
           message: 'Ошибка при обновлении данных пользователя.',
         });
     });
+};
+
+module.exports.login = (req, res, next) => {
+  const { email, password } = req.body;
+  User.findUserByCredintials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, 'qwerty', { expiresIn: '7d' });
+      res
+        .cookie('jwt', token, {
+          maxAge: 3600000,
+          httpOnly: true,
+        }).send({
+        data: {
+          email: user.email,
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          _id: user._id,
+        },
+      })
+        .end();
+    })
+    .catch(next);
 };
 
 module.exports.updateUserAvatar = (req, res) => {
