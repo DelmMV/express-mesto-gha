@@ -2,7 +2,8 @@ const {
   celebrate,
   Joi,
 } = require('celebrate');
-const userRouter = require('express').Router();
+const userRouter = require('express')
+  .Router();
 const {
   createUser,
   getAllUsers,
@@ -22,14 +23,23 @@ userRouter.get('/:userId', celebrate({
   },
 }), getUserById);
 userRouter.patch('/me', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
-  }),
+  body: Joi.object()
+    .keys({
+      name: Joi.string()
+        .required()
+        .min(2)
+        .max(30),
+      about: Joi.string()
+        .required()
+        .min(2)
+        .max(30),
+    }),
 }), updateUserProfile);
 userRouter.patch('/me/avatar', celebrate({
   body: {
-    avatar: Joi.string().required().regex(/^http(s)?:\/\/((www.)?([\w-]+\.)+\/?)\S*$/),
+    avatar: Joi.string()
+      .required()
+      .regex(/^http(s)?:\/\/((www.)?([\w-]+\.)+\/?)\S*$/),
   },
 }), updateUserAvatar);
 

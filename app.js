@@ -1,10 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { celebrate, Joi } = require('celebrate');
+const {
+  celebrate,
+  Joi,
+} = require('celebrate');
 const { errors } = require('celebrate');
 const auth = require('./middlewares/auth');
-const { createUser, login } = require('./controllers/users');
+const {
+  createUser,
+  login,
+} = require('./controllers/users');
 const error = require('./middlewares/errors');
 const NotFoundError = require('./utils/not-found-error');
 const cardRouter = require('./routes/cards');
@@ -21,18 +27,29 @@ app.use(express.json());
 
 app.post('/signup', celebrate({
   body: {
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string().regex(/^http(s)?:\/\/((www.)?([\w-]+\.)+\/?)\S*$/),
+    email: Joi.string()
+      .required()
+      .email(),
+    password: Joi.string()
+      .required(),
+    name: Joi.string()
+      .min(2)
+      .max(30),
+    about: Joi.string()
+      .min(2)
+      .max(30),
+    avatar: Joi.string()
+      .regex(/^http(s)?:\/\/((www.)?([\w-]+\.)+\/?)\S*$/),
   },
 }), createUser);
 
 app.post('/signin', celebrate({
   body: {
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
+    email: Joi.string()
+      .required()
+      .email(),
+    password: Joi.string()
+      .required(),
   },
 }), login);
 

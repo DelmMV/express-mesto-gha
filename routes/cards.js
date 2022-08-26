@@ -1,4 +1,5 @@
-const cardRouter = require('express').Router();
+const cardRouter = require('express')
+  .Router();
 const {
   createCard,
   getCard,

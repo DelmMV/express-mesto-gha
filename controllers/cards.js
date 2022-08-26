@@ -1,20 +1,33 @@
 const Card = require('../models/card');
-const { BAD_REQUEST, NOT_FOUND, INTERNAL_SERVER_ERROR } = require('../utils/errors');
+const {
+  BAD_REQUEST,
+  NOT_FOUND,
+  INTERNAL_SERVER_ERROR,
+} = require('../utils/errors');
 
 module.exports.createCard = (req, res) => {
-  const { name, link } = req.body;
+  const {
+    name,
+    link,
+  } = req.body;
   const owner = req.user._id;
-  Card.create({ name, link, owner })
+  Card.create({
+    name,
+    link,
+    owner,
+  })
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(BAD_REQUEST).send({
-          message: 'Переданы некорректные данные для создания карточки',
-        });
+        return res.status(BAD_REQUEST)
+          .send({
+            message: 'Переданы некорректные данные для создания карточки',
+          });
       }
-      return res.status(INTERNAL_SERVER_ERROR).send({
-        message: 'Произошла ошибка создания карточки.',
-      });
+      return res.status(INTERNAL_SERVER_ERROR)
+        .send({
+          message: 'Произошла ошибка создания карточки.',
+        });
     });
 };
 
