@@ -63,19 +63,3 @@ app.use(error);
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
-
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '62f2141dbf0828a4de657728',
-//   };
-//   next();
-// });
-// app.use('/users', userRouter);
-// app.use('/cards', cardRouter);
-// app.use('/*', (req, res) => {
-//   res.status(404).send({ message: 'Такой страницы не существует' });
-// });
-//
-// app.listen(PORT, () => {
-//   console.log(`App listening on port ${PORT}`);
-// });
