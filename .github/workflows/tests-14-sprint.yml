@@ -1,4 +1,4 @@
-name: Tests 13 sprint
+name: Tests 14 sprint
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
     - name: Installing Dependencies
       run: npm i
     - name: Run test config
-      run: make proj13-test-config
+      run: make proj14-test-config
 
   test_endpoints:
     runs-on: ubuntu-latest
@@ -39,19 +39,17 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 14.x
-    - name: Сheck if the repository is private
-      run: exit 1
-      if: ${{github.event.repository.private}}
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.6.0
       with:
         mongodb-version: '4.4'
+    - name: Сheck if the repository is private
+      run: exit 1
+      if: ${{github.event.repository.private}}
     - name: Get testing lib
       run: set -eu && git clone --depth 1 https://github.com/Yandex-Practicum/web-autotest-public.git
     - name: Copy Makefile
       run: cp ./web-autotest-public/Makefile ./Makefile
-    - name: Run prepare-test-endpoints
-      run: make proj13-prepare-test-endpoints
     - name: Installing Dependencies
       run: npm i
     - name: Run server
@@ -60,5 +58,5 @@ jobs:
       run: npm install -g wait-port
     - name: Wait for server to start
       run: wait-port -t 30000 localhost:3000
-    - name: Run test config
-      run: make proj13-test-endpoints
+    - name: Run test endpoints
+      run: make proj14-test-endpoints
