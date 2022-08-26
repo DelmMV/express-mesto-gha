@@ -9,17 +9,20 @@ const userSchema = new mongoose.Schema(
       type: String,
       minlength: 2,
       maxlength: 30,
-      required: true,
+      default: 'Жак-Ив Кусто',
     },
     about: {
       type: String,
       minlength: 2,
       maxlength: 30,
-      required: true,
+      default: 'Исследователь',
     },
     avatar: {
       type: String,
-      required: true,
+      validate: {
+        validator: (avatar) => /^http(s)?:\/\/((www.)?([\w-]+\.)+\/?)\S*$/g.test(avatar),
+      },
+      default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     },
     email: {
       type: String,
@@ -39,22 +42,18 @@ const userSchema = new mongoose.Schema(
     versionKey: false,
   },
 );
-
-userSchema.statics.findUserByData = function (email, password) {
-  return this.findOne({ email })
-    .select('+password')
+userSchema.statics.findUserByCredintials = function (email, password) {
+  return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
         throw new UnauthorizedError('Неверный email или пароль');
       }
-      return bcrypt.compare(password, user.password)
-        .then((matched) => {
-          if (!matched) {
-            throw new UnauthorizedError('Неверный email или пароль');
-          }
-          return user;
-        });
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          throw new UnauthorizedError('Неверный email или пароль');
+        }
+        return user;
+      });
     });
 };
-
 module.exports = mongoose.model('user', userSchema);

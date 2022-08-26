@@ -1,19 +1,16 @@
 const {
-  celebrate,
-  Joi,
-} = require('celebrate');
-const userRouter = require('express')
-  .Router();
+  celebrate, Joi } = require('celebrate');
+const userRouter = require('express').Router();
 const {
-  createUser,
+  getMe,
   getAllUsers,
   getUserById,
   updateUserProfile,
   updateUserAvatar,
 } = require('../controllers/users');
 
-userRouter.post('/', createUser);
 userRouter.get('/', getAllUsers);
+userRouter.get('/me', getMe);
 userRouter.get('/:userId', celebrate({
   params: {
     userId: Joi.string()
