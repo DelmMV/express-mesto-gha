@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const { CREATE } = require('../utils/errors');
 const ConflictError = require('../utils/conflict-error');
-const NotFoundError = require('../utils/not-found-error')
+const NotFoundError = require('../utils/not-found-error');
 const BadRequestError = require('../utils/bad-request-error');
 
 module.exports.createUser = (req, res, next) => {
@@ -12,7 +12,7 @@ module.exports.createUser = (req, res, next) => {
     about,
     avatar,
     email,
-    password
+    password,
   } = req.body;
   User.findOne({ email })
     .then((userFinded) => {
@@ -135,93 +135,10 @@ module.exports.updateUserAvatar = (req, res, next) => {
     }).catch(next);
 };
 
-// module.exports.updateUserProfile = (req, res, next) => {
-//   const {
-//     name,
-//     about
-//   } = req.body;
-//   if (!name || !about) {
-//     return res.status(BAD_REQUEST)
-//       .send({
-//         message: 'Переданы некорректные данные для обновления информации о пользователе',
-//       });
-//   }
-//   return User.findByIdAndUpdate(req.user._id, {
-//     name,
-//     about
-//   }, {
-//     new: true,
-//     runValidators: true,
-//   })
-//     .orFail()
-//     .then((user) => res.send(user))
-//     .catch((err) => {
-//       if (err.name === 'ValidationError') {
-//         return res.status(BAD_REQUEST)
-//           .send({
-//             message: 'Переданы некорректные данные для обновления информации о пользователе',
-//           });
-//       }
-//       if (err.name === 'DocumentNotFoundError') {
-//         return res
-//           .status(NOT_FOUND)
-//           .send({ message: `Пользователь с id: ${req.user._id} не найден.` });
-//       }
-//       if (err.name === 'CastError') {
-//         return res
-//           .status(BAD_REQUEST)
-//           .send({ message: 'Передан неверный id пользователя' });
-//       }
-//       return res.status(INTERNAL_SERVER_ERROR)
-//         .send({
-//           message: 'Ошибка при обновлении данных пользователя.',
-//         });
-//     });
-// };
-// module.exports.updateUserAvatar = (req, res) => {
-//   const { avatar } = req.body;
-//   if (!avatar) {
-//     res.status(BAD_REQUEST)
-//       .send({
-//         message: 'Переданы некорректные данные для обновления аватара пользователя',
-//       });
-//     return;
-//   }
-//   User.findByIdAndUpdate(req.user._id, { avatar }, {
-//     new: true,
-//     runValidators: true,
-//   })
-//     .orFail()
-//     .then((user) => res.send(user))
-//     .catch((err) => {
-//       if (err.name === 'ValidationError') {
-//         return res.status(BAD_REQUEST)
-//           .send({
-//             message: 'Переданы некорректные данные для обновления аватара пользователя',
-//           });
-//       }
-//       if (err.name === 'DocumentNotFoundError') {
-//         return res.status(NOT_FOUND)
-//           .send({
-//             message: `Пользователь с id: ${req.user._id} не найден.`,
-//           });
-//       }
-//       if (err.name === 'CastError') {
-//         return res
-//           .status(BAD_REQUEST)
-//           .send({ message: 'Передан неверный id пользователя' });
-//       }
-//       return res.status(INTERNAL_SERVER_ERROR)
-//         .send({
-//           message: 'Произошла ошибка при обновлении аватара пользователя.',
-//         });
-//     });
-// };
-
 module.exports.login = (req, res, next) => {
   const {
     email,
-    password
+    password,
   } = req.body;
   User.findUserByCredintials(email, password)
     .then((user) => {
