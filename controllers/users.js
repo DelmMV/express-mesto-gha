@@ -148,7 +148,7 @@ module.exports.login = (req, res, next) => {
   User.findUserByCredintials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'qwerty', { expiresIn: '7d' });
-      res.send({ token })
+      res.send({ token });
     })
     .catch(next);
 };
