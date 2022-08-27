@@ -13,7 +13,7 @@ module.exports.createCard = (req, res, next) => {
         throw new BadRequestError('Переданы некорректные данные');
       }
       next(err);
-    }).catch(next);
+    });
 };
 
 module.exports.getCard = (req, res, next) => {
@@ -41,8 +41,7 @@ module.exports.deleteCard = (req, res, next) => {
       throw new BadRequestError('Передан некорректный id карточки');
     }
     next(err);
-  })
-    .catch(next);
+  });
 };
 
 module.exports.likeCard = (req, res, next) => {
@@ -65,7 +64,7 @@ module.exports.likeCard = (req, res, next) => {
         throw new BadRequestError('Передан некорректный id карточки');
       }
       next(err);
-    }).catch(next);
+    });
 };
 
 module.exports.dislikeCard = (req, res, next) => {
@@ -88,5 +87,5 @@ module.exports.dislikeCard = (req, res, next) => {
         throw new BadRequestError('Передан некорректный id карточки');
       }
       next(err);
-    }).catch(next);
+    });
 };
