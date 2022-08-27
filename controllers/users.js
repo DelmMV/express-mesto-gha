@@ -59,9 +59,10 @@ module.exports.getUserById = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new BadRequestError('Передан некорректный id пользователя');
+      } else {
+        next(err);
       }
-      next(err);
-    }).catch(next);
+    });
 };
 
 module.exports.getMe = (req, res, next) => {
