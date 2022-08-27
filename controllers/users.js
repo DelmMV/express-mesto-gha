@@ -73,7 +73,7 @@ module.exports.createUser = (req, res, next) => {
         about: user.about,
         avatar: user.avatar,
         _id: user._id,
-      }
+      },
     }))
     .catch((err) => {
       if (err.code === 11000) {
