@@ -70,7 +70,7 @@ module.exports.getMe = (req, res, next) => {
     if (!user) {
       throw new NotFoundError('Запрашиваемый пользователь не найден');
     }
-    res.status(200).send({ data: user });
+    res.send({ data: user });
   }).catch(next);
 };
 
