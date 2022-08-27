@@ -6,53 +6,6 @@ const ConflictError = require('../utils/conflict-error');
 const NotFoundError = require('../utils/not-found-error');
 const BadRequestError = require('../utils/bad-request-error');
 
-// module.exports.createUser = (req, res, next) => {
-//   const {
-//     name,
-//     about,
-//     avatar,
-//     email,
-//     password,
-//   } = req.body;
-//   User.findOne({ email })
-//     .then((userFinded) => {
-//       if (userFinded) {
-//         throw new ConflictError('Пользователь уже зарегестрирован');
-//       }
-//       bcrypt.hash(password, 10)
-//         .then((hash) => User.create({
-//           name,
-//           about,
-//           avatar,
-//           email,
-//           password: hash,
-//         }))
-//         .then((user) => {
-//           res.status(CREATE)
-//             .send({
-//               data: {
-//                 email: user.email,
-//                 name: user.name,
-//                 about: user.about,
-//                 avatar: user.avatar,
-//                 _id: user._id,
-//               },
-//             });
-//         })
-//         .catch((err) => {
-//           if (err.name === 'ValidationError') {
-//             throw new BadRequestError('Переданы некорректные данные');
-//           }
-//           if (err.code === 11000) {
-//             throw new ConflictError('Пользователь уже зарегестрирован');
-//           }
-//           next(err);
-//         })
-//         .catch(next);
-//     })
-//     .catch(next);
-// };
-
 module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
