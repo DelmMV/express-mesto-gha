@@ -81,17 +81,17 @@ module.exports.getMe = (req, res, next) => {
 module.exports.updateUserProfile = (req, res, next) => {
   const {
     name,
-    about
+    about,
   } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
     {
       name,
-      about
+      about,
     },
     {
       new: true,
-      runValidators: true
+      runValidators: true,
     },
   )
     .then((user) => {
@@ -119,7 +119,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
     { avatar },
     {
       new: true,
-      runValidators: true
+      runValidators: true,
     },
   )
     .then((user) => {
