@@ -35,12 +35,12 @@ module.exports.createUser = (req, res, next) => {
       }))
     .catch((err) => {
       if (err.code === 11000) {
-        next(new ConflictError('Пользователь уже зарегестрирован'));
+        return next(new ConflictError('Пользователь уже зарегестрирован'));
       }
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Переданы некорректные данные'));
+        return next(new BadRequestError('Переданы некорректные данные'));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -61,9 +61,9 @@ module.exports.getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Передан некорректный id пользователя');
+        return next(new BadRequestError('Передан некорректный id пользователя'));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -103,12 +103,12 @@ module.exports.updateUserProfile = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
+        return next(new BadRequestError('Переданы некорректные данные'));
       }
       if (err.name === 'CastError') {
-        throw new BadRequestError('Передан некорректный id пользователя');
+        return next(new BadRequestError('Передан некорректный id пользователя'));
       }
-      next(err);
+      return next(err);
     });
 };
 
@@ -131,12 +131,12 @@ module.exports.updateUserAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные');
+        return next(new BadRequestError('Переданы некорректные данные'));
       }
       if (err.name === 'CastError') {
-        throw new BadRequestError('Передан некорректный id пользователя');
+        return next(new BadRequestError('Передан некорректный id пользователя'));
       }
-      next(err);
+      return next(err);
     });
 };
 
